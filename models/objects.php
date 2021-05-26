@@ -53,9 +53,9 @@ class Objects extends Model
 						"wires.active = 1",
 						"wires.toid = objects.id",
 						"objects.active = '1'");
-		// $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
+		$order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
         /* exception for ICA, applies globally */
-        $order 	= array("objects.rank", "objects.modified DESC", "objects.end", "objects.begin", "objects.name1");
+        // $order 	= array("objects.rank", "objects.modified DESC", "objects.end", "objects.begin", "objects.name1");
     
 		return $this->get_all($fields, $tables, $where, $order);
 	}
@@ -98,35 +98,34 @@ class Objects extends Model
 		return $ids;
 	}
 
-    /*  
-        major performance issues on ica.art. the issue is:
-
-            > $all = $this->traverse(0);
-
-        which does not scale efficiently to the size of ica.art database
-    */
-
-	public function siblings($o)
+    public function siblings($o)
 	{
+		global $db;
 		$siblings = array();
 
-        /*
-		$all = $this->traverse(0);
-		
-		for($i = 0; $i < count($all); $i++)
-		{
-			if(end($all[$i]) == $o)
-			{
-				$p = (count($all[$i]) > 1) ? $all[$i][count($all[$i])-2] : 0;
-				$s = $this->children_ids($p);
-				$siblings = array_merge($siblings, $s);
-			}
-		}
-		$siblings = array_unique($siblings);
-		$k = array_search($o, $siblings);
-		unset($siblings[$k]);
-        */
+        $sql = "SELECT wires.fromid FROM wires, objects 
+                WHERE wires.toid = '" . $o . "' 
+                AND objects.id = wires.fromid 
+                AND objects.active = '1'";
+        $res = $db->query($sql);
+        if(!$res)
+			throw new Exception($db->error);
+		$fromid_arr = array();
+		while ($obj = $res->fetch_assoc())
+			$fromid_arr[] = $obj['fromid'];
+		$res->close();
 
+		foreach($fromid_arr as $parent_id)
+		{
+			$this_siblings = $this->children_ids($parent_id);
+			foreach($this_siblings as $key => $s_id)
+			{
+				if($s_id == $o)
+					unset($this_siblings[$key]);
+			}
+			$this_siblings = array_values($this_siblings);
+			$siblings = array_merge($siblings, $this_siblings);
+		}
 		return  $siblings;
 	}
 	
@@ -244,7 +243,7 @@ class Objects extends Model
 		$tables = array("media");
 		$where 	= array("object = '".$o."'", 
 						"active = '1'");
-		$order 	= array("rank", "modified", "created", "id");
+		$order 	= array("media.rank", "media.modified", "media.created", "media.id");
 		
 		return $this->get_all($fields, $tables, $where, $order);
 	}
@@ -255,7 +254,7 @@ class Objects extends Model
 		$tables = array("media");
 		$where 	= array("object = '".$o."'", 
 						"active = '1'");
-		$order 	= array("rank", "modified", "created", "id");
+		$order 	= array("media.rank", "media.modified", "media.created", "media.id");
 		$res = $this->get_all($fields, $tables, $where, $order);
 		$ids = array();
 		foreach($res as $r)
