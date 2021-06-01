@@ -52,20 +52,27 @@ function valid_url($u, $alt, $excludes)
 	// array_search returns the position (index) of $u in
 	// $excludes, or false if not present in the array.
 	// therefore, strict compare to false
-	if(empty($u) || array_search($u, $excludes) !== false)
-	{
-		$url = $alt;
-		while(array_search($url, $excludes) !== false)
-			$url = rand_str();
-	}
-	else
-		$url = $u;
+
+	// if(empty($u) || array_search($u, $excludes) !== false)
+	// {
+	// 	$url = $alt;
+	// 	while(array_search($url, $excludes) !== false)
+	// 		$url = rand_str();
+	// }
+	// else
+	// 	$url = $u;
+    $url = $alt;
+    while(array_search($url, $excludes) !== false)
+        $url = rand_str();
 
 	return $url;
 }
 function validate_url($u, $excludes)
 {
-    
+    if(empty($u) || array_search($u, $excludes) !== false)
+        return false;
+    else
+        return true;
 }
 
 // why do i need two of these?
