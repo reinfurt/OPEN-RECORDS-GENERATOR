@@ -83,8 +83,11 @@ function update_object(&$old, &$new, $siblings, $vars)
 		$s_urls = array();
 		foreach($siblings as $s_id)
 			$s_urls[] = $oo->get($s_id)['url'];
+		$urlIsValid = validate_url($new['url'], $s_urls);
 
-		$new['url'] = valid_url($new['url'], strval($old['id']), $s_urls);
+		valid_url($new['url'], strval($old['id']), $s_urls);
+		if( $urlIsValid !== true)
+			$new['url'] = $urlIsValid;
 	}
 	// deal with dates
 	if(!empty($new['begin']))

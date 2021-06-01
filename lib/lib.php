@@ -63,6 +63,10 @@ function valid_url($u, $alt, $excludes)
 
 	return $url;
 }
+function validate_url($u, $excludes)
+{
+    
+}
 
 // why do i need two of these?
 // which would be better to keep? probably the second one.
