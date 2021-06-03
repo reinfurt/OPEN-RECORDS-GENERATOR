@@ -673,7 +673,7 @@ else
 	?><p>Record successfully updated.</p><?
 		if(!$urlIsValid)
 		{
-		?><p>*** The url of this record is set to be '<?= $new['url']; ?>' because of a conflict with another record ***</p><?
+		?><p>*** The url of this record has been set to '<?= $new['url']; ?>' because of a conflict with another record. ***</p><?
 		}
 	}
 	else

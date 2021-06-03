@@ -53,17 +53,9 @@ function valid_url($u, $alt, $excludes)
 	// $excludes, or false if not present in the array.
 	// therefore, strict compare to false
 
-	// if(empty($u) || array_search($u, $excludes) !== false)
-	// {
-	// 	$url = $alt;
-	// 	while(array_search($url, $excludes) !== false)
-	// 		$url = rand_str();
-	// }
-	// else
-	// 	$url = $u;
-    $url = $alt;
+    $url = $u . '-' . $alt;
     while(array_search($url, $excludes) !== false)
-        $url = rand_str();
+        $url = $u . '-' . rand(1000, 9999);
 
 	return $url;
 }
