@@ -101,7 +101,8 @@ function insert_object(&$new, $siblings)
 	// need to strip out the quotes that were added to appease sql
 	$u = str_replace("'", "", $new['url']);
 	$urlIsValid = validate_url($u, $s_urls);
-	if( !$urlIsValid ){
+	if( !$urlIsValid )
+	{
 		$url = valid_url($u, strval($id), $s_urls);
 		$new['url'] = "'".$url."'";
 		$oo->update($id, $new);

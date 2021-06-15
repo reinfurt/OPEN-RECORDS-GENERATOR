@@ -81,9 +81,9 @@ function update_object(&$old, &$new, $siblings, $vars)
 
 		// make sure url doesn't clash with urls of siblings
 		$s_urls = array();
-		foreach($siblings as $s_id){
+		foreach($siblings as $s_id)
 			$s_urls[] = $oo->get($s_id)['url'];
-		}
+		
 		$urlIsValid = validate_url($new['url'], $s_urls);
 		if( !$urlIsValid )
 			$new['url'] = valid_url($new['url'], strval($old['id']), $s_urls);
