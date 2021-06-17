@@ -97,7 +97,7 @@ class Objects extends Model
 
 		return $ids;
 	}
-
+	
     public function siblings($o)
 	{
 		global $db;
@@ -105,8 +105,9 @@ class Objects extends Model
 
         $sql = "SELECT wires.fromid FROM wires, objects 
                 WHERE wires.toid = '" . $o . "' 
-                AND objects.id = wires.fromid 
-                AND objects.active = '1'";
+                AND ((objects.id = wires.fromid 
+                AND objects.active = '1' )
+                OR (wires.fromid = '0' AND objects.id = wires.toid))";
         $res = $db->query($sql);
         if(!$res)
 			throw new Exception($db->error);
@@ -114,7 +115,6 @@ class Objects extends Model
 		while ($obj = $res->fetch_assoc())
 			$fromid_arr[] = $obj['fromid'];
 		$res->close();
-
 		foreach($fromid_arr as $parent_id)
 		{
 			$this_siblings = $this->children_ids($parent_id);

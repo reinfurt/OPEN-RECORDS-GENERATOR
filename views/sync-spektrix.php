@@ -172,13 +172,21 @@ function addOrUpdateEvent($event) {
 		return false;
 	} else {
 		// create
+
+		// check url part 1
+		$siblings = $oo->children($root);
+		$s_urls = array();
+		foreach($siblings as $s)
+			$s_urls[] = $s['url'];
+		$url = slug($event["name"]);
+		
 		$processed = array(
 			"name1" => '.' . $event["name"], // title - text
 			"name2" => $spektrix_id, // ticketing id
 			"country" => $booking_url, // booking url
 			"begin" => date($oo::MYSQL_DATE_FMT, strtotime($event['begin_date'])), // begin date
 			"end" => date($oo::MYSQL_DATE_FMT, strtotime($event['end_date'])), // end date
-			"url" => slug($event["name"]) // slug!
+			"url" => $url // slug!
 		);
 
 		// print_r($processed);
@@ -193,8 +201,18 @@ function addOrUpdateEvent($event) {
 
 		$event_id = $oo->insert($processed);
 
-		if ($event_id != 0)
+		if ($event_id != 0){
 			$ww->create_wire($root, $event_id);
+
+			// check url part 2
+			$urlIsValid = validate_url($url, $s_urls);
+			if( !$urlIsValid )
+			{
+				$url = valid_url($url, strval($event_id), $s_urls);
+				$new['url'] = "'".$url."'";
+				$oo->update($event_id, $new);
+			}
+		}
 
 		return true;
 	}
@@ -224,6 +242,7 @@ function addOrUpdateInstance($instance) {
     return false;
   } else {
     // insert
+    
     $sql = "INSERT INTO spektrix (event_id, event_instance_id, venue, date_time, duration, date_modified, date_created) VALUES ";
     $sql .= "('" . addslashes($eventId) . "', ";
     $sql .= "'" . addslashes($instanceId) . "', ";
