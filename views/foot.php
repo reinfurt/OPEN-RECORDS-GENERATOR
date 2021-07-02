@@ -9,6 +9,7 @@ $g = $host.$generate_url;
 						<?php if ($user != 'guest'): ?>
 							<a class="button" href="<? echo $admin_path; ?>settings">SETTINGS</a>
 						<?php endif; ?>
+						<a class="button" href="<? echo $admin_path; ?>sync-shopify">SYNC</a>
 						<a class="button" href="<? echo $admin_path; ?>logout" style="float: right;">LOG OUT</a>
 					<? endif; ?>
 				</footer>

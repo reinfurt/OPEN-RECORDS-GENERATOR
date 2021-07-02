@@ -472,5 +472,11 @@ function remove_accents($string) {
 
     return $string;
 }
+
+function get_single_tag($str){
+    $bracket_pattern = '/\[(.*?)\]/';
+    preg_match($bracket_pattern, $str, $output);
+    return $output[1];
+}
 ?>
 

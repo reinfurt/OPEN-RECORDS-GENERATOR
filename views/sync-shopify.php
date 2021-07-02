@@ -40,10 +40,21 @@
 			{
 				$existing_product_ids[] = get_single_tag($child['deck']);
 			}
+
+			$donate_id = end($oo->urls_to_ids(array('donate')));
+			$donate_item = $oo->get($donate_id);
+			$donate_product_id = get_single_tag($donate_item['deck']);
 			?>
 			<script>
 			var existing_product_ids = <?= json_encode($existing_product_ids); ?>;
-			console.log(existing_product_ids);
+			var donate_product_id = window.btoa('gid://shopify/Product/<?= $donate_product_id; ?>');
+			console.log('existing_product_ids = ');
+			existing_product_ids.forEach((el, i) => {
+				el = window.btoa('gid://shopify/Product/'+el);
+			});
+			console.log('donate id = ');
+			console.log(donate_product_id);
+			
 			var isTest = false;
 			if(isTest){
           var shopUrl = "https://bookstore-n-y-c-test.myshopify.com";
@@ -76,7 +87,7 @@
               }
           }   
       }`;
-      const fetchQuery1 = () => {
+      const fetchQuery_all = () => {
 		    // Define options for first query with no variables and body is string and not a json object
 		    const optionsQuery_all = {
 		        method: "post",
@@ -93,10 +104,16 @@
 		        .then(response => {
 		            productId = response.data.products.edges[0].node.id; 
 		            console.log("=============== Fetch First Product ===============");
-		            console.log(JSON.stringify(response, null, 4));
+		            // var response_json = JSON.stringify(response, null, 4);
+		            var edges = response.data.products.edges;
+		            edges.forEach(function(el, i){
+
+		            	console.log('['+el.node.id+'] '+el.node.title);
+		            });
 		            // fetchQuery2(productId)  
 		        });
 			}
+			fetchQuery_all();
    	 </script>
  	 	<?
 		}
