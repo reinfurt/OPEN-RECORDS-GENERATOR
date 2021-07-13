@@ -14,7 +14,10 @@ $s_urls = $data['s_urls'];
 $new = array();
 foreach($data as $key => $d){
 	if($key != 'id' && $key != 'action' && $key != 's_urls' && $key != 'parent_id'){
-		$new[$key] = !empty($d) ? "'".htmlentities(addslashes($d))."'" : "null";
+		if($data['action'] == 'insert' && $key == 'name1')
+			$new[$key] = !empty($d) ? "'.".htmlentities(addslashes($d))."'" : "null";
+		else
+			$new[$key] = !empty($d) ? "'".htmlentities(addslashes($d))."'" : "null";
 	}
 }
 if($data['action'] == 'update'){
