@@ -14,19 +14,23 @@ $s_urls = $data['s_urls'];
 $new = array();
 foreach($data as $key => $d){
 	if($key != 'id' && $key != 'action' && $key != 's_urls' && $key != 'parent_id'){
-		if($data['action'] == 'insert' && $key == 'name1')
-			$new[$key] = !empty($d) ? "'.".htmlentities(addslashes($d))."'" : "null";
+		if(empty($d))
+			$this_value = "null";
 		else
-			$new[$key] = !empty($d) ? "'".htmlentities(addslashes($d))."'" : "null";
+		{
+			if($data['action'] == 'insert' && $key == 'name1')
+				$this_value = '.' . htmlentities(addslashes($d));
+			else if($key == 'body')
+				$this_value = addslashes($d);
+			else
+				$this_value = htmlentities(addslashes($d));
+			$this_value = "'".$this_value."'";
+		}
+		
+		$new[$key] = $this_value;
 	}
 }
 if($data['action'] == 'update'){
-	if(isset($new['name1']))
-		$new['url'] = slug($new['name1']);
-	$urlIsValid = validate_url($new['url'], $s_urls);
-	if( !$urlIsValid )
-		$new['url'] = valid_url($new['url'], strval($data['id']), $s_urls);
-	$new['url'] = "'".$new['url']."'";
 	$id = $oo->update($data['id'], $new);
 }
 else if($data['action'] == 'insert'){
