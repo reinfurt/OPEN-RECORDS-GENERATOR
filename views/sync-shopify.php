@@ -121,8 +121,17 @@
 				}
 				catch(Exception $err)
 				{
-					$hasDonate = false;
-					$donate_product_id = -1;
+					try{
+						$donate_id = end($oo->urls_to_ids(array('donation')));
+						$donate_item = $oo->get($donate_id);
+						$donate_product_id = get_single_tag($donate_item['deck']);
+						$hasDonate = true;
+					}
+					catch(Exception $err)
+					{
+						$hasDonate = false;
+						$donate_product_id = -1;
+					}
 				}
 				
 				?>
